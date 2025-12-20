@@ -1,7 +1,10 @@
 using Carter;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
+using SportsData.Shared;
 
 namespace SportsData.Modules.Competitions.Presentation
 {
@@ -11,12 +14,16 @@ namespace SportsData.Modules.Competitions.Presentation
         {
             var group = app.MapGroup("api/competitions").WithTags("Competitions");
 
-            group.MapGet("leagues", () =>
+            group.MapGet("leagues", async (ISender sender) =>
             {
-                return Results.Ok(new[]
+                var result = await sender.Send(new GetLeaguesQuery());
+
+                if (!result.IsSuccess)
                 {
-                    new { Id = Guid.NewGuid(), Name = "Egyptian Premier League", Country = "Egypt" }
-                });
+                    return Results.BadRequest(ResponseEnvelope<List<LeagueDto>>.Failure(result.Errors));
+                }
+
+                return Results.Ok(ResponseEnvelope<List<LeagueDto>>.Success(result.Value!));
             });
         }
     }

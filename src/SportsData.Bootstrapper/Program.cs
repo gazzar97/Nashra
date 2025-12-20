@@ -12,6 +12,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCompetitionsModule(builder.Configuration);
 builder.Services.AddMatchesModule(builder.Configuration);
 
+// Shared Kernel Behaviors
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(SportsData.Shared.ValidationBehavior<,>));
+
 // Add Carter
 builder.Services.AddCarter();
 
