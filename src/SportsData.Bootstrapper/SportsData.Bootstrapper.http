@@ -1,0 +1,6 @@
+@SportsData.Bootstrapper_HostAddress = http://localhost:5136
+
+GET {{SportsData.Bootstrapper_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

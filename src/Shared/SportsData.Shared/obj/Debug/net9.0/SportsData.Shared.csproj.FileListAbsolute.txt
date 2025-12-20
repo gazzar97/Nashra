@@ -1,0 +1,12 @@
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\bin\Debug\net9.0\SportsData.Shared.deps.json
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\bin\Debug\net9.0\SportsData.Shared.dll
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\bin\Debug\net9.0\SportsData.Shared.pdb
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.csproj.AssemblyReference.cache
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.AssemblyInfoInputs.cache
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.AssemblyInfo.cs
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.csproj.CoreCompileInputs.cache
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.dll
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\refint\SportsData.Shared.dll
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\SportsData.Shared.pdb
+C:\Users\IT\source\repos\Nashra\src\Shared\SportsData.Shared\obj\Debug\net9.0\ref\SportsData.Shared.dll
