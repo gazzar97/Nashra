@@ -20,10 +20,10 @@ namespace SportsData.Modules.Competitions.Presentation
 
                 if (!result.IsSuccess)
                 {
-                    return Results.BadRequest(ResponseEnvelope<List<LeagueDto>>.Failure(result.Errors));
+                    return Results.BadRequest(Envelope<List<LeagueDto>>.Failure(result.Errors));
                 }
 
-                return Results.Ok(ResponseEnvelope<List<LeagueDto>>.Success(result.Value!));
+                return Results.Ok(Envelope<List<LeagueDto>>.Success(result.Value!));
             });
         }
     }
