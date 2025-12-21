@@ -4,7 +4,7 @@ using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Shared;
 using SportsData.Shared.Caching;
 
-namespace SportsData.Modules.Competitions.Application.Teams.GetTeams
+namespace SportsData.Modules.Competitions.Application.Teams.Queries
 {
     public record GetTeamsQuery : PagedRequest, IQuery<PagedList<TeamDto>>
     {

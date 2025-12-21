@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
-using SportsData.Modules.Competitions.Application.Teams.GetTeams;
 using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Shared;
 using Asp.Versioning;
+using SportsData.Modules.Competitions.Application.Teams.Queries;
 
 namespace SportsData.Modules.Competitions.Presentation
 {
