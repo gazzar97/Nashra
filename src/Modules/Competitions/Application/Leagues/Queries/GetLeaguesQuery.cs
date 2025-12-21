@@ -1,10 +1,10 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using SportsData.Modules.Competitions.Application.Leagues.Services;
 using SportsData.Modules.Competitions.Infrastructure;
 using SportsData.Shared;
+using SportsData.Shared.Caching;
 
 namespace SportsData.Modules.Competitions.Application.Leagues.GetLeagues
 {
@@ -26,30 +26,24 @@ namespace SportsData.Modules.Competitions.Application.Leagues.GetLeagues
 
     public class GetLeaguesQueryHandler : IQueryHandler<GetLeaguesQuery, PagedList<LeagueDto>>
     {
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
         private readonly ILeagueService _leagueService;
 
-        public GetLeaguesQueryHandler(IMemoryCache cache,ILeagueService leagueService)
+        public GetLeaguesQueryHandler(ICacheService cacheService, ILeagueService leagueService)
         {
             _leagueService = leagueService;
-            _cache = cache;
+            _cacheService = cacheService;
         }
+
         public async Task<Result<PagedList<LeagueDto>>> Handle(GetLeaguesQuery request, CancellationToken cancellationToken)
         {
-           
             var cacheKey = $"leagues_{request.Country}_{request.Page}_{request.PageSize}";
 
-            if (_cache.TryGetValue(cacheKey, out PagedList<LeagueDto>? cachedLeagues) && cachedLeagues is not null)
-            {
-                return Result<PagedList<LeagueDto>>.Success(cachedLeagues);
-            }
-
-            var pagedResult = await _leagueService.GetLeagues(request.Country ?? string.Empty, request.Page, request.PageSize);
-            var cacheOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(5))
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
-
-            _cache.Set(cacheKey, pagedResult, cacheOptions);
+            var pagedResult = await _cacheService.GetOrCreateAsync(
+                cacheKey,
+                async ct => await _leagueService.GetLeagues(request.Country ?? string.Empty, request.Page, request.PageSize),
+                TimeSpan.FromMinutes(10),
+                cancellationToken);
 
             return Result<PagedList<LeagueDto>>.Success(pagedResult);
         }

@@ -3,6 +3,7 @@ using SportsData.Modules.Matches;
 using SportsData.Modules.DataProcessing;
 using Carter;
 using SportsData.Modules.Competitions.Infrastructure.Seeders;
+using SportsData.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCompetitionsModule(builder.Configuration);
 builder.Services.AddMatchesModule(builder.Configuration);
 builder.Services.AddDataProcessingModule(builder.Configuration);
+builder.Services.AddSharedServices();
 
 // Shared Kernel Behaviors
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(SportsData.Shared.ValidationBehavior<,>));
