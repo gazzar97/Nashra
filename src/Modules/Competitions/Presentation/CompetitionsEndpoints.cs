@@ -23,11 +23,15 @@ namespace SportsData.Modules.Competitions.Presentation
                 .WithApiVersionSet(apiVersionSet)
                 .MapToApiVersion(1);
 
-            group.MapGet("leagues", async (ISender sender) =>
+            group.MapGet("leagues", async ([AsParameters] GetLeaguesQuery query, ISender sender) =>
             {
-                var result = await sender.Send(new GetLeaguesQuery());
+                var result = await sender.Send(query);
                 return result.ToHttpResult();
-            });
+            })
+            .WithName("GetLeagues")
+            .WithSummary("Retrieves a list of leagues")
+            .WithDescription("Retrieves a paginated list of leagues with optional country filtering.")
+            .Produces<Envelope<PagedList<LeagueDto>>>(StatusCodes.Status200OK);
 
             group.MapGet("leagues/{id}", (Guid id) => Results.Ok($"League {id}"));
             group.MapGet("leagues/{id}/seasons", (Guid id) => Results.Ok($"Seasons for League {id}"));
