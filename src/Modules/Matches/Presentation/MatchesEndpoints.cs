@@ -27,6 +27,8 @@ namespace SportsData.Modules.Matches.Presentation
 
                 return result.ToHttpResult();
             });
+
+            group.MapGet("/{id}/statistics", (Guid id) => Results.Ok($"Statistics for Match {id}"));
         }
     }
 }

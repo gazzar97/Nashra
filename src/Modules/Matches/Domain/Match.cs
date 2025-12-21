@@ -6,7 +6,7 @@ namespace SportsData.Modules.Matches.Domain
     {
         public Guid HomeTeamId { get; private set; }
         public Guid AwayTeamId { get; private set; }
-        public Guid LeagueId { get; private set; }
+        public Guid SeasonId { get; private set; }
         public DateTime StartTime { get; private set; }
         public MatchStatus Status { get; private set; }
         public int? HomeScore { get; private set; }
@@ -14,11 +14,11 @@ namespace SportsData.Modules.Matches.Domain
 
         private Match() { }
 
-        public Match(Guid homeTeamId, Guid awayTeamId, Guid leagueId, DateTime startTime)
+        public Match(Guid homeTeamId, Guid awayTeamId, Guid seasonId, DateTime startTime)
         {
             HomeTeamId = homeTeamId;
             AwayTeamId = awayTeamId;
-            LeagueId = leagueId;
+            SeasonId = seasonId;
             StartTime = startTime;
             Status = MatchStatus.Scheduled;
         }
