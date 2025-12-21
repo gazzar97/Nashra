@@ -2,6 +2,9 @@ using Carter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using MediatR;
+using SportsData.Shared;
+using SportsData.Modules.Matches.Application.Matches.GetMatches;
 
 namespace SportsData.Modules.Matches.Presentation
 {
@@ -11,12 +14,16 @@ namespace SportsData.Modules.Matches.Presentation
         {
             var group = app.MapGroup("api/matches").WithTags("Matches");
 
-            group.MapGet("/", () =>
+            group.MapGet("/", async (ISender sender) =>
             {
-                return Results.Ok(new[]
+                var result = await sender.Send(new GetMatchesQuery());
+
+                if (!result.IsSuccess)
                 {
-                    new { Id = Guid.NewGuid(), Match = "Al Ahly vs Zamalek", Status = "Scheduled" }
-                });
+                    return Results.BadRequest(Envelope<List<MatchDto>>.Failure(result.Errors));
+                }
+
+                return Results.Ok(Envelope<List<MatchDto>>.Success(result.Value!));
             });
         }
     }
