@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.0.0" />
@@ -26,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Competitions\SportsData.Modules.Competitions.csproj" />
     <ProjectReference Include="..\Modules\Matches\SportsData.Modules.Matches.csproj" />
+    <ProjectReference Include="..\Modules\DataProcessing\SportsData.Modules.DataProcessing.csproj" />
   </ItemGroup>
 
 </Project>

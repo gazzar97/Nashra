@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
 using SportsData.Shared;
+using Asp.Versioning;
 
 namespace SportsData.Modules.Competitions.Presentation
 {
@@ -12,7 +13,15 @@ namespace SportsData.Modules.Competitions.Presentation
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var group = app.MapGroup("api/competitions").WithTags("Competitions");
+            var apiVersionSet = app.NewApiVersionSet()
+                .HasApiVersion(new Asp.Versioning.ApiVersion(1))
+                .ReportApiVersions()
+                .Build();
+
+            var group = app.MapGroup("api/v{version:apiVersion}/competitions")
+                .WithTags("Competitions")
+                .WithApiVersionSet(apiVersionSet)
+                .MapToApiVersion(1);
 
             group.MapGet("leagues", async (ISender sender) =>
             {
