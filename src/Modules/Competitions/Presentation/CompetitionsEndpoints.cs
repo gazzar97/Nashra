@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
+using SportsData.Modules.Competitions.Application.Teams.GetTeams;
+using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Shared;
 using Asp.Versioning;
 
@@ -36,7 +38,15 @@ namespace SportsData.Modules.Competitions.Presentation
             group.MapGet("leagues/{id}", (Guid id) => Results.Ok($"League {id}"));
             group.MapGet("leagues/{id}/seasons", (Guid id) => Results.Ok($"Seasons for League {id}"));
             group.MapGet("seasons/{id}", (Guid id) => Results.Ok($"Season {id}"));
-            group.MapGet("teams", () => Results.Ok("Teams"));
+            group.MapGet("teams", async ([AsParameters] GetTeamsQuery query, ISender sender) =>
+            {
+                var result = await sender.Send(query);
+                return result.ToHttpResult();
+            })
+            .WithName("GetTeams")
+            .WithSummary("Retrieves a list of teams")
+            .WithDescription("Retrieves a paginated list of teams with optional league and season filtering.")
+            .Produces<Envelope<PagedList<TeamDto>>>(StatusCodes.Status200OK);
             group.MapGet("teams/{id}", (Guid id) => Results.Ok($"Team {id}"));
             group.MapGet("players/{id}", (Guid id) => Results.Ok($"Player {id}"));
         }

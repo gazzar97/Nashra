@@ -47,6 +47,9 @@ using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<LeaguesSeeder>();
     await seeder.SeedAsync();
+
+    var teamsSeeder = scope.ServiceProvider.GetRequiredService<TeamsSeeder>();
+    await teamsSeeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.
