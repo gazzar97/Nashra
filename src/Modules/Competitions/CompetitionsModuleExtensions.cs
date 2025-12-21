@@ -13,15 +13,19 @@ namespace SportsData.Modules.Competitions
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<CompetitionsDbContext>(options =>
-            {
-                options.UseSqlServer(connectionString);
-            });
+             {
+                 options.UseSqlServer(connectionString);
+             });
+
+            services.AddMemoryCache();
 
             // Register MediatR Handlers from this assembly
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CompetitionsModuleExtensions).Assembly));
             
             // Register Validators
             services.AddValidatorsFromAssembly(typeof(CompetitionsModuleExtensions).Assembly);
+
+            services.AddScoped<LeaguesSeeder>();
 
             return services;
         }

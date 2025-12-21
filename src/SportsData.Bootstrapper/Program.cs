@@ -1,3 +1,4 @@
+using SportsData.Modules.Competitions.Infrastructure;
 using SportsData.Modules.Competitions;
 using SportsData.Modules.Matches;
 using SportsData.Modules.DataProcessing;
@@ -36,7 +37,15 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+
 var app = builder.Build();
+
+// Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<LeaguesSeeder>();
+    await seeder.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
