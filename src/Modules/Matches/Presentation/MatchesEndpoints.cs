@@ -1,10 +1,11 @@
 using Carter;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using MediatR;
-using SportsData.Shared;
 using SportsData.Modules.Matches.Application.Matches.GetMatches;
+using SportsData.Modules.Matches.Application.Matches.Queries;
+using SportsData.Shared;
 
 namespace SportsData.Modules.Matches.Presentation
 {
@@ -18,12 +19,13 @@ namespace SportsData.Modules.Matches.Presentation
             {
                 var result = await sender.Send(new GetMatchesQuery());
 
-                if (!result.IsSuccess)
-                {
-                    return Results.BadRequest(Envelope<List<MatchDto>>.Failure(result.Errors));
-                }
+                return result.ToHttpResult();
+            });
+            group.MapGet("/getMatchById", async (ISender sender,int matchId) =>
+            {
+                var result = await sender.Send(new GetMatchByIdQuery() { matchId = matchId });
 
-                return Results.Ok(Envelope<List<MatchDto>>.Success(result.Value!));
+                return result.ToHttpResult();
             });
         }
     }

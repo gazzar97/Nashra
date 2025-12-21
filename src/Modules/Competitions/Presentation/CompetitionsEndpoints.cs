@@ -17,13 +17,8 @@ namespace SportsData.Modules.Competitions.Presentation
             group.MapGet("leagues", async (ISender sender) =>
             {
                 var result = await sender.Send(new GetLeaguesQuery());
+                return result.ToHttpResult();
 
-                if (!result.IsSuccess)
-                {
-                    return Results.BadRequest(Envelope<List<LeagueDto>>.Failure(result.Errors));
-                }
-
-                return Results.Ok(Envelope<List<LeagueDto>>.Success(result.Value!));
             });
         }
     }
