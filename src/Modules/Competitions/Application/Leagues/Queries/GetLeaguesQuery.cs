@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using SportsData.Modules.Competitions.Application.Leagues.Services;
 using SportsData.Modules.Competitions.Infrastructure;
 using SportsData.Shared;
 
@@ -25,17 +26,17 @@ namespace SportsData.Modules.Competitions.Application.Leagues.GetLeagues
 
     public class GetLeaguesQueryHandler : IQueryHandler<GetLeaguesQuery, PagedList<LeagueDto>>
     {
-        private readonly CompetitionsDbContext _dbContext;
         private readonly IMemoryCache _cache;
+        private readonly ILeagueService _leagueService;
 
-        public GetLeaguesQueryHandler(CompetitionsDbContext dbContext, IMemoryCache cache)
+        public GetLeaguesQueryHandler(IMemoryCache cache,ILeagueService leagueService)
         {
-            _dbContext = dbContext;
+            _leagueService = leagueService;
             _cache = cache;
         }
-
         public async Task<Result<PagedList<LeagueDto>>> Handle(GetLeaguesQuery request, CancellationToken cancellationToken)
         {
+           
             var cacheKey = $"leagues_{request.Country}_{request.Page}_{request.PageSize}";
 
             if (_cache.TryGetValue(cacheKey, out PagedList<LeagueDto>? cachedLeagues) && cachedLeagues is not null)
@@ -43,17 +44,7 @@ namespace SportsData.Modules.Competitions.Application.Leagues.GetLeagues
                 return Result<PagedList<LeagueDto>>.Success(cachedLeagues);
             }
 
-            var query = _dbContext.Leagues.AsNoTracking().AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(request.Country))
-            {
-                query = query.Where(l => l.Country == request.Country);
-            }
-
-            var projectedQuery = query.Select(l => new LeagueDto(l.Id, l.Name, l.Country, l.LogoUrl));
-
-            var pagedResult = await projectedQuery.ToPagedListAsync(request.Page, request.PageSize, cancellationToken);
-
+            var pagedResult = await _leagueService.GetLeagues(request.Country ?? string.Empty, request.Page, request.PageSize);
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromMinutes(5))
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));

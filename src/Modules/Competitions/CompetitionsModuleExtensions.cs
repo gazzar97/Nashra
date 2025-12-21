@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using SportsData.Modules.Competitions.Infrastructure;
 using FluentValidation;
+using SportsData.Modules.Competitions.Infrastructure.Seeders;
+using SportsData.Modules.Competitions.Application.Leagues.Services;
+using SportsData.Modules.Competitions.Infrastructure.Leagues;
 
 namespace SportsData.Modules.Competitions
 {
@@ -26,6 +29,7 @@ namespace SportsData.Modules.Competitions
             services.AddValidatorsFromAssembly(typeof(CompetitionsModuleExtensions).Assembly);
 
             services.AddScoped<LeaguesSeeder>();
+            services.AddScoped<ILeagueService, LeagueService>();
 
             return services;
         }

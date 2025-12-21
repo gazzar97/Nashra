@@ -1,6 +1,6 @@
 using SportsData.Modules.Competitions.Domain;
 
-namespace SportsData.Modules.Competitions.Infrastructure
+namespace SportsData.Modules.Competitions.Infrastructure.Seeders
 {
     public class LeaguesSeeder
     {

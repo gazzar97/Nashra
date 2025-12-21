@@ -1,8 +1,8 @@
-using SportsData.Modules.Competitions.Infrastructure;
 using SportsData.Modules.Competitions;
 using SportsData.Modules.Matches;
 using SportsData.Modules.DataProcessing;
 using Carter;
+using SportsData.Modules.Competitions.Infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
