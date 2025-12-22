@@ -1,4 +1,5 @@
 ﻿using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
+using SportsData.Modules.Competitions.Application.Leagues.Queries;
 using SportsData.Shared;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace SportsData.Modules.Competitions.Application.Leagues.Services
     public interface ILeagueService 
     {
         Task<PagedList<LeagueDto>> GetLeagues(string Country, int Page, int PageSize);
+        Task<List<SeasonDto>> GetSeasons(Guid leagueId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
+using SportsData.Modules.Competitions.Application.Leagues.Queries;
 using SportsData.Modules.Competitions.Application.Leagues.Services;
 using SportsData.Shared;
 using System;
@@ -34,6 +35,17 @@ namespace SportsData.Modules.Competitions.Infrastructure.Leagues
             var pagedResult = await projectedQuery.ToPagedListAsync(Page, PageSize);
 
             return pagedResult;
+        }
+
+        public async Task<List<SeasonDto>> GetSeasons(Guid leagueId)
+        {
+            var seasons = await _dbContext.Seasons
+                .AsNoTracking()
+                .Where(s => s.LeagueId == leagueId)
+                .OrderByDescending(s => s.Year)
+                .ToListAsync();
+
+            return seasons.Select(s => new SeasonDto(s.Id, s.Year, s.IsCurrent)).ToList();
         }
     }
 }

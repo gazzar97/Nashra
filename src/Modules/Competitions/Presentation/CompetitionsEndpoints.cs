@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SportsData.Modules.Competitions.Application.Leagues.GetLeagues;
+using SportsData.Modules.Competitions.Application.Leagues.Queries;
 using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Shared;
 using Asp.Versioning;
@@ -36,7 +37,17 @@ namespace SportsData.Modules.Competitions.Presentation
             .Produces<Envelope<PagedList<LeagueDto>>>(StatusCodes.Status200OK);
 
             group.MapGet("leagues/{id}", (Guid id) => Results.Ok($"League {id}"));
-            group.MapGet("leagues/{id}/seasons", (Guid id) => Results.Ok($"Seasons for League {id}"));
+
+            group.MapGet("leagues/{id}/seasons", async ([AsParameters] GetSeasonsQuery query, ISender sender) =>
+            {
+                var result = await sender.Send(query);
+                return result.ToHttpResult();
+            })
+            .WithName("GetSeasons")
+            .WithSummary("Retrieves a list of seasons for a league")
+            .WithDescription("Retrieves all seasons for a specific league, ordered by year descending.")
+            .Produces<Envelope<List<SeasonDto>>>(StatusCodes.Status200OK);
+
             group.MapGet("seasons/{id}", (Guid id) => Results.Ok($"Season {id}"));
             group.MapGet("teams", async ([AsParameters] GetTeamsQuery query, ISender sender) =>
             {

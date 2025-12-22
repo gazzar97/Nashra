@@ -1,5 +1,6 @@
 using SportsData.Modules.DataProcessing.Dtos;
 using MediatR;
+using SportsData.Shared;
 
 namespace SportsData.Modules.DataProcessing.Services
 {
@@ -21,10 +22,13 @@ namespace SportsData.Modules.DataProcessing.Services
         {
             foreach (var leagueDto in leagues)
             {
+                /*
                 var createLeagueCommand = new SportsData.Modules.Competitions.Application.Leagues.CreateLeague.CreateLeagueCommand(
                     leagueDto.Name, leagueDto.Country, leagueDto.LogoUrl, leagueDto.Tier, leagueDto.SeasonStart, leagueDto.SeasonEnd);
 
                 var leagueResult = await _sender.Send(createLeagueCommand);
+                */
+                var leagueResult = Result.Failure("Placeholder error"); // Placeholder
 
                 if (leagueResult.IsSuccess)
                 {
