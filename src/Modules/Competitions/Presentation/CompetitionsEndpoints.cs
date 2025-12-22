@@ -46,7 +46,7 @@ namespace SportsData.Modules.Competitions.Presentation
             .WithName("GetSeasons")
             .WithSummary("Retrieves a list of seasons for a league")
             .WithDescription("Retrieves all seasons for a specific league, ordered by year descending.")
-            .Produces<Envelope<List<SeasonDto>>>(StatusCodes.Status200OK);
+            .Produces<Envelope<PagedList<List<SeasonDto>>>>(StatusCodes.Status200OK);
 
             group.MapGet("seasons/{id}", (Guid id) => Results.Ok($"Season {id}"));
             group.MapGet("teams", async ([AsParameters] GetTeamsQuery query, ISender sender) =>

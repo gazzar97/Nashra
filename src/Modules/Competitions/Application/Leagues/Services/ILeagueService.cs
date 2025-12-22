@@ -12,6 +12,6 @@ namespace SportsData.Modules.Competitions.Application.Leagues.Services
     public interface ILeagueService 
     {
         Task<PagedList<LeagueDto>> GetLeagues(string Country, int Page, int PageSize);
-        Task<List<SeasonDto>> GetSeasons(Guid leagueId);
+        Task<PagedList<SeasonDto>> GetSeasons(Guid leagueId, int Page, int PageSize);
     }
 }

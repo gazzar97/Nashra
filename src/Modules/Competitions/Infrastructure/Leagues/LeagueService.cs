@@ -37,15 +37,18 @@ namespace SportsData.Modules.Competitions.Infrastructure.Leagues
             return pagedResult;
         }
 
-        public async Task<List<SeasonDto>> GetSeasons(Guid leagueId)
+        public async Task<PagedList<SeasonDto>> GetSeasons(Guid leagueId,int Page, int PageSize)
         {
-            var seasons = await _dbContext.Seasons
-                .AsNoTracking()
-                .Where(s => s.LeagueId == leagueId)
-                .OrderByDescending(s => s.Year)
-                .ToListAsync();
+            var query = _dbContext.Seasons
+                                       .AsNoTracking()
+                                       .Where(s => s.LeagueId == leagueId)
+                                       .OrderByDescending(s => s.Year)
+                                       .Select(s => new SeasonDto(
+                                           s.Id,
+                                           s.Year,
+                                           s.IsCurrent));
 
-            return seasons.Select(s => new SeasonDto(s.Id, s.Year, s.IsCurrent)).ToList();
+            return await query.ToPagedListAsync(Page, PageSize);
         }
     }
 }
