@@ -62,6 +62,27 @@ namespace SportsData.Modules.Competitions.Presentation
             .WithDescription("Retrieves a paginated list of matches with optional team and date filtering. Supports fixtures, live scores, and results.")
             .Produces<Envelope<PagedList<MatchDto>>>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest);
+
+            group.MapGet("matches/{matchId}/stats", async (Guid matchId, ISender sender) =>
+            {
+                var query = new GetMatchStatsQuery(matchId);
+                var result = await sender.Send(query);
+
+                if (!result.IsSuccess)
+                    return result.ToHttpResult();
+
+                // Return 204 if stats not available
+                if (result.Value == null)
+                    return Results.NoContent();
+
+                return result.ToHttpResult();
+            })
+            .WithName("GetMatchStats")
+            .WithSummary("Retrieves detailed statistics for a specific match")
+            .WithDescription("Returns possession, shots, cards, corners, and fouls for both teams. Returns 204 if stats are not yet available.")
+            .Produces<Envelope<MatchStatsDto>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
             
             group.MapGet("teams", async ([AsParameters] GetTeamsQuery query, ISender sender) =>
             {

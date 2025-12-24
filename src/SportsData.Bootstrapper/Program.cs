@@ -53,6 +53,9 @@ using (var scope = app.Services.CreateScope())
 
     var matchesSeeder = scope.ServiceProvider.GetRequiredService<MatchesSeeder>();
     await matchesSeeder.SeedAsync();
+
+    var matchStatsSeeder = scope.ServiceProvider.GetRequiredService<MatchStatsSeeder>();
+    await matchStatsSeeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.

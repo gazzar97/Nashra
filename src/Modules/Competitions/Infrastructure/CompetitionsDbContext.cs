@@ -14,6 +14,7 @@ namespace SportsData.Modules.Competitions.Infrastructure
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Match> Matches { get; set; }
+        public DbSet<MatchStats> MatchStats { get; set; }
         public DbSet<LeagueTeamSeason> LeagueTeamSeasons { get; set; }
         public DbSet<TeamPlayerSeason> TeamPlayerSeasons { get; set; }
 
@@ -47,6 +48,14 @@ namespace SportsData.Modules.Competitions.Infrastructure
             modelBuilder.Entity<Match>()
                 .HasIndex(m => m.Status)
                 .HasDatabaseName("IX_Match_Status");
+
+            // MatchStats entity configuration
+            modelBuilder.Entity<MatchStats>().HasKey(x => x.Id);
+            
+            // Performance index for primary query pattern (get stats by match)
+            modelBuilder.Entity<MatchStats>()
+                .HasIndex(m => m.MatchId)
+                .HasDatabaseName("IX_MatchStats_MatchId");
         }
     }
 }

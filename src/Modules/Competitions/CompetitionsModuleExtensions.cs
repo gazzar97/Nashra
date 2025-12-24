@@ -35,9 +35,11 @@ namespace SportsData.Modules.Competitions
             services.AddScoped<LeaguesSeeder>();
             services.AddScoped<TeamsSeeder>();
             services.AddScoped<MatchesSeeder>();
+            services.AddScoped<MatchStatsSeeder>();
             services.AddScoped<ILeagueService, LeagueService>();
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<IMatchStatsService, MatchStatsService>();
 
             return services;
         }
