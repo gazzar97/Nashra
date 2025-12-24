@@ -9,6 +9,8 @@ using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Shared;
 using Asp.Versioning;
 using SportsData.Modules.Competitions.Application.Teams.Queries;
+using SportsData.Modules.Competitions.Application.Matches.Queries;
+using SportsData.Modules.Competitions.Application.Matches.Services;
 
 namespace SportsData.Modules.Competitions.Presentation
 {
@@ -46,9 +48,21 @@ namespace SportsData.Modules.Competitions.Presentation
             .WithName("GetSeasons")
             .WithSummary("Retrieves a list of seasons for a league")
             .WithDescription("Retrieves all seasons for a specific league, ordered by year descending.")
-            .Produces<Envelope<PagedList<List<SeasonDto>>>>(StatusCodes.Status200OK);
+            .Produces<Envelope<PagedList<SeasonDto>>>(StatusCodes.Status200OK);
 
             group.MapGet("seasons/{id}", (Guid id) => Results.Ok($"Season {id}"));
+            
+            group.MapGet("matches", async ([AsParameters] GetMatchesQuery query, ISender sender) =>
+            {
+                var result = await sender.Send(query);
+                return result.ToHttpResult();
+            })
+            .WithName("GetMatches")
+            .WithSummary("Retrieves match results for a season")
+            .WithDescription("Retrieves a paginated list of matches with optional team and date filtering. Supports fixtures, live scores, and results.")
+            .Produces<Envelope<PagedList<MatchDto>>>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
+            
             group.MapGet("teams", async ([AsParameters] GetTeamsQuery query, ISender sender) =>
             {
                 var result = await sender.Send(query);
