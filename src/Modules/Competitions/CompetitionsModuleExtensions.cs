@@ -8,8 +8,6 @@ using SportsData.Modules.Competitions.Application.Leagues.Services;
 using SportsData.Modules.Competitions.Infrastructure.Leagues;
 using SportsData.Modules.Competitions.Application.Teams.Services;
 using SportsData.Modules.Competitions.Infrastructure.Teams;
-using SportsData.Modules.Competitions.Application.Matches.Services;
-using SportsData.Modules.Competitions.Infrastructure.Matches;
 
 namespace SportsData.Modules.Competitions
 {
@@ -34,12 +32,8 @@ namespace SportsData.Modules.Competitions
 
             services.AddScoped<LeaguesSeeder>();
             services.AddScoped<TeamsSeeder>();
-            services.AddScoped<MatchesSeeder>();
-            services.AddScoped<MatchStatsSeeder>();
             services.AddScoped<ILeagueService, LeagueService>();
             services.AddScoped<ITeamService, TeamService>();
-            services.AddScoped<IMatchService, MatchService>();
-            services.AddScoped<IMatchStatsService, MatchStatsService>();
 
             return services;
         }

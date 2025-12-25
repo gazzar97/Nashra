@@ -51,11 +51,7 @@ using (var scope = app.Services.CreateScope())
     var teamsSeeder = scope.ServiceProvider.GetRequiredService<TeamsSeeder>();
     await teamsSeeder.SeedAsync();
 
-    var matchesSeeder = scope.ServiceProvider.GetRequiredService<MatchesSeeder>();
-    await matchesSeeder.SeedAsync();
-
-    var matchStatsSeeder = scope.ServiceProvider.GetRequiredService<MatchStatsSeeder>();
-    await matchStatsSeeder.SeedAsync();
+    // TODO: Add match seeders to Matches module
 }
 
 // Configure the HTTP request pipeline.
