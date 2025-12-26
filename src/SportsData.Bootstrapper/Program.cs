@@ -1,20 +1,53 @@
 using SportsData.Modules.Competitions;
 using SportsData.Modules.Matches;
 using SportsData.Modules.DataProcessing;
+using SportsData.Modules.ApiKeys;
 using Carter;
 using SportsData.Modules.Competitions.Infrastructure.Seeders;
 using SportsData.Shared;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add API Key security definition
+    options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Description = "API Key needed to access the endpoints. Format: X-API-Key: {your key}",
+        In = ParameterLocation.Header,
+        Name = "X-API-Key",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "ApiKeyScheme"
+    });
+
+    // Make API Key required globally
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey"
+                },
+                Scheme = "ApiKeyScheme",
+                Name = "X-API-Key",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
 
 // Register Modules
 builder.Services.AddCompetitionsModule(builder.Configuration);
 builder.Services.AddMatchesModule(builder.Configuration);
 builder.Services.AddDataProcessingModule(builder.Configuration);
+builder.Services.AddApiKeysModule(builder.Configuration);
 builder.Services.AddSharedServices();
 
 // Shared Kernel Behaviors
@@ -51,6 +84,9 @@ using (var scope = app.Services.CreateScope())
     var teamsSeeder = scope.ServiceProvider.GetRequiredService<TeamsSeeder>();
     await teamsSeeder.SeedAsync();
 
+    var apiKeysSeeder = scope.ServiceProvider.GetRequiredService<SportsData.Modules.ApiKeys.Infrastructure.Seeders.ApiKeysSeeder>();
+    await apiKeysSeeder.SeedAsync();
+
     // TODO: Add match seeders to Matches module
 }
 
@@ -62,6 +98,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable API Key Validation Middleware
+app.UseMiddleware<SportsData.Modules.ApiKeys.Middleware.ApiKeyValidationMiddleware>();
 
 app.MapCarter();
 
