@@ -4,6 +4,7 @@ using SportsData.Modules.ApiKeys.Application.ApiKeys.Services;
 using SportsData.Modules.ApiKeys.Application.RateLimiting;
 using SportsData.Modules.ApiKeys.Application.UsageLogging;
 using SportsData.Modules.ApiKeys.Infrastructure.Repositories;
+using SportsData.Shared;
 
 namespace SportsData.Modules.ApiKeys.Middleware
 {
@@ -43,7 +44,8 @@ namespace SportsData.Modules.ApiKeys.Middleware
                 string.IsNullOrWhiteSpace(apiKeyValue))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(new { error = "API key is required" });
+                var envelope = Envelope<object>.Failure(new[] { "API key is required" });
+                await context.Response.WriteAsJsonAsync(envelope);
                 return;
             }
 
@@ -58,7 +60,8 @@ namespace SportsData.Modules.ApiKeys.Middleware
                     : StatusCodes.Status401Unauthorized;
 
                 context.Response.StatusCode = statusCode;
-                await context.Response.WriteAsJsonAsync(new { error = validationResult.Errors.FirstOrDefault() });
+                var envelope = Envelope<object>.Failure(validationResult.Errors);
+                await context.Response.WriteAsJsonAsync(envelope);
                 return;
             }
 
@@ -74,7 +77,8 @@ namespace SportsData.Modules.ApiKeys.Middleware
             if (!rateLimitResult.IsSuccess)
             {
                 context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-                await context.Response.WriteAsJsonAsync(new { error = rateLimitResult.Errors.FirstOrDefault() });
+                var envelope = Envelope<object>.Failure(rateLimitResult.Errors);
+                await context.Response.WriteAsJsonAsync(envelope);
                 return;
             }
 
