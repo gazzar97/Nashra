@@ -5,9 +5,36 @@ using SportsData.Modules.ApiKeys;
 using Carter;
 using SportsData.Modules.Competitions.Infrastructure.Seeders;
 using SportsData.Shared;
+using SportsData.Shared.Middleware;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
+
+// Configure Serilog BEFORE building the host
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("System", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
+try
+{
+    Log.Information("Starting SportsData API");
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Replace default logging with Serilog
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId());
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -52,6 +79,7 @@ builder.Services.AddSharedServices();
 
 // Shared Kernel Behaviors
 builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(SportsData.Shared.ValidationBehavior<,>));
+builder.Services.AddTransient(typeof(MediatR.IPipelineBehavior<,>), typeof(SportsData.Shared.LoggingBehavior<,>));
 
 // Add Carter
 builder.Services.AddCarter();
@@ -99,9 +127,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Enable Request Logging Middleware (before API Key validation)
+app.UseMiddleware<RequestLoggingMiddleware>();
+
 // Enable API Key Validation Middleware
 app.UseMiddleware<SportsData.Modules.ApiKeys.Middleware.ApiKeyValidationMiddleware>();
 
 app.MapCarter();
 
-app.Run();
+    Log.Information("SportsData API started successfully");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    Log.CloseAndFlush();
+}
