@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SportsData.Modules.Competitions.Infrastructure.Persistence;
-using SportsData.Modules.Matches.Infrastructure.Persistence;
-using SportsData.Modules.ApiKeys.Infrastructure.Persistence;
+using SportsData.Modules.Competitions.Infrastructure;
+using SportsData.Modules.Matches.Infrastructure;
+using SportsData.Modules.ApiKeys.Infrastructure;
 
 namespace SportsData.Bootstrapper.Extensions;
 
