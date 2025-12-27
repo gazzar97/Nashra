@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using SportsData.Modules.ApiKeys.Middleware;
+using SportsData.Bootstrapper.Extensions;
 
 // Configure Serilog BEFORE building the host
 Log.Logger = new LoggerConfiguration()
@@ -99,6 +100,9 @@ builder.Services.AddApiVersioning(options =>
 
 
 var app = builder.Build();
+
+// Apply Database Migrations
+await app.Services.ApplyMigrationsAsync(app.Logger);
 
 // Seed Data
 using (var scope = app.Services.CreateScope())
