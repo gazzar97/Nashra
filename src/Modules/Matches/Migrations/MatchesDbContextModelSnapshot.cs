@@ -17,49 +17,64 @@ namespace SportsData.Modules.Matches.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("matches")
                 .HasAnnotation("ProductVersion", "9.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("SportsData.Modules.Matches.Domain.Match", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int?>("AwayScore")
                         .HasColumnType("int");
 
                     b.Property<Guid>("AwayTeamId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int?>("HomeScore")
                         .HasColumnType("int");
 
                     b.Property<Guid>("HomeTeamId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("MatchDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("SeasonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("Venue")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Matches", "matches");
+                    b.HasIndex("AwayTeamId")
+                        .HasDatabaseName("IX_Match_AwayTeamId");
+
+                    b.HasIndex("HomeTeamId")
+                        .HasDatabaseName("IX_Match_HomeTeamId");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("IX_Match_Status");
+
+                    b.HasIndex("SeasonId", "MatchDate")
+                        .HasDatabaseName("IX_Match_SeasonId_MatchDate");
+
+                    b.ToTable("matches_match", (string)null);
                 });
 
             modelBuilder.Entity("SportsData.Modules.Matches.Domain.MatchStatistics", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("CornersAway")
                         .HasColumnType("int");
@@ -74,7 +89,7 @@ namespace SportsData.Modules.Matches.Migrations
                         .HasColumnType("int");
 
                     b.Property<Guid>("MatchId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("PossessionAway")
                         .HasColumnType("int");
@@ -94,6 +109,12 @@ namespace SportsData.Modules.Matches.Migrations
                     b.Property<int>("ShotsHome")
                         .HasColumnType("int");
 
+                    b.Property<int>("ShotsOnTargetAway")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShotsOnTargetHome")
+                        .HasColumnType("int");
+
                     b.Property<int>("YellowCardsAway")
                         .HasColumnType("int");
 
@@ -102,7 +123,10 @@ namespace SportsData.Modules.Matches.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MatchStatistics", "matches");
+                    b.HasIndex("MatchId")
+                        .HasDatabaseName("IX_MatchStatistics_MatchId");
+
+                    b.ToTable("matches_matchStatistics", (string)null);
                 });
 #pragma warning restore 612, 618
         }

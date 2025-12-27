@@ -5,6 +5,7 @@ namespace SportsData.Modules.Matches.Infrastructure
 {
     public class MatchesDbContext : DbContext
     {
+        public const string DefaultSchema = "matches_";
         public MatchesDbContext(DbContextOptions<MatchesDbContext> options) : base(options)
         {
         }
@@ -14,10 +15,9 @@ namespace SportsData.Modules.Matches.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("matches");
             
-            modelBuilder.Entity<Match>().HasKey(x => x.Id);
-            modelBuilder.Entity<MatchStatistics>().HasKey(x => x.Id);
+            modelBuilder.Entity<Match>().ToTable($"{DefaultSchema}match").HasKey(x => x.Id);
+            modelBuilder.Entity<MatchStatistics>().ToTable($"{DefaultSchema}matchStatistics").HasKey(x => x.Id);
 
             // Performance indexes for Match queries
             modelBuilder.Entity<Match>()
