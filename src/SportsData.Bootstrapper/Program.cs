@@ -115,7 +115,7 @@ var app = builder.Build();
 await app.Services.ApplyMigrationsAsync(app.Logger);
 
 // Seed Data
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<LeaguesSeeder>();
     await seeder.SeedAsync();
@@ -127,7 +127,7 @@ using (var scope = app.Services.CreateScope())
     await apiKeysSeeder.SeedAsync();
 
     // TODO: Add match seeders to Matches module
-}
+}*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
