@@ -32,10 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
-		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
-		Dockerfile.migrations = Dockerfile.migrations
-		railway.toml = railway.toml
 	EndProjectSection
 EndProject
 Global
@@ -137,5 +134,8 @@ Global
 		{6114E456-8FDA-49C3-8C23-243624BBB06C} = {A4993497-E65C-5B91-99B0-4763393EA7DC}
 		{B8D4F5E7-9A2C-4D3E-8F1A-5C6B7D8E9F0A} = {EC447DCF-ABFA-6E24-52A5-D7FD48A5C558}
 		{C9E5F6D8-0B3D-4E4F-9A2B-6D7C8E9F0B1C} = {B8D4F5E7-9A2C-4D3E-8F1A-5C6B7D8E9F0A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08EAAE60-EE2F-4B1B-8B9E-628D0750F0FA}
 	EndGlobalSection
 EndGlobal
