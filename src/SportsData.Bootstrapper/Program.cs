@@ -148,22 +148,22 @@ app.MapCarter();
 app.Run();
 
 // Helper method to parse Railway's DATABASE_URL format
-static string ParseDatabaseUrl(string databaseUrl)
-{
-    // Railway format: mysql://user:password@host:port/database
-    var regex = new Regex(@"mysql://(?<user>[^:]+):(?<password>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<database>.+)");
-    var match = regex.Match(databaseUrl);
+//static string ParseDatabaseUrl(string databaseUrl)
+//{
+//    // Railway format: mysql://user:password@host:port/database
+//    var regex = new Regex(@"mysql://(?<user>[^:]+):(?<password>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<database>.+)");
+//    var match = regex.Match(databaseUrl);
     
-    if (!match.Success)
-    {
-        throw new InvalidOperationException($"Invalid DATABASE_URL format: {databaseUrl}");
-    }
+//    if (!match.Success)
+//    {
+//        throw new InvalidOperationException($"Invalid DATABASE_URL format: {databaseUrl}");
+//    }
     
-    var user = match.Groups["user"].Value;
-    var password = match.Groups["password"].Value;
-    var host = match.Groups["host"].Value;
-    var port = match.Groups["port"].Value;
-    var database = match.Groups["database"].Value;
+//    var user = match.Groups["user"].Value;
+//    var password = match.Groups["password"].Value;
+//    var host = match.Groups["host"].Value;
+//    var port = match.Groups["port"].Value;
+//    var database = match.Groups["database"].Value;
     
-    return $"Server={host};Port={port};Database={database};User={user};Password={password};SslMode=Required;";
-}
+//    return $"Server={host};Port={port};Database={database};User={user};Password={password};SslMode=Required;";
+//}
