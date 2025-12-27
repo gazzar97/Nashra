@@ -15,10 +15,11 @@ namespace SportsData.Modules.Matches
 
             services.AddDbContext<MatchesDbContext>(options =>
             {
-                if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+                if (databaseProvider.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
                 {
-                    options.UseNpgsql(connectionString, npgsqlOptions =>
-                        npgsqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
+                    var serverVersion = ServerVersion.AutoDetect(connectionString);
+                    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+                        mySqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
                 }
                 else
                 {

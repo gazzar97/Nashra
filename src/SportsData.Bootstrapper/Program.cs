@@ -33,7 +33,7 @@ if (!string.IsNullOrEmpty(databaseUrl))
 {
     var connectionString = ParseDatabaseUrl(databaseUrl);
     builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
-    builder.Configuration["DatabaseProvider"] = "PostgreSQL";
+    builder.Configuration["DatabaseProvider"] = "MySQL";
 }
 
 // Replace default logging with Serilog
@@ -150,8 +150,8 @@ app.Run();
 // Helper method to parse Railway's DATABASE_URL format
 static string ParseDatabaseUrl(string databaseUrl)
 {
-    // Railway format: postgresql://user:password@host:port/database
-    var regex = new Regex(@"postgres(?:ql)?://(?<user>[^:]+):(?<password>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<database>.+)");
+    // Railway format: mysql://user:password@host:port/database
+    var regex = new Regex(@"mysql://(?<user>[^:]+):(?<password>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<database>.+)");
     var match = regex.Match(databaseUrl);
     
     if (!match.Success)
@@ -165,5 +165,5 @@ static string ParseDatabaseUrl(string databaseUrl)
     var port = match.Groups["port"].Value;
     var database = match.Groups["database"].Value;
     
-    return $"Host={host};Port={port};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+    return $"Server={host};Port={port};Database={database};User={user};Password={password};SslMode=Required;";
 }

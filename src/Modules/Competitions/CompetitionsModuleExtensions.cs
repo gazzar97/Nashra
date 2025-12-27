@@ -20,20 +20,21 @@ namespace SportsData.Modules.Competitions
 
             services.AddDbContext<CompetitionsDbContext>(options =>
              {
-                 if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
-                 {
-                     options.UseNpgsql(connectionString, npgsqlOptions =>
-                         npgsqlOptions.MigrationsAssembly("SportsData.Modules.Competitions"));
-                 }
-                 else
-                 {
-                     options.UseSqlServer(connectionString, sqlOptions =>
-                         sqlOptions.MigrationsAssembly("SportsData.Modules.Competitions"));
-                 }
+                if (databaseProvider.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
+                {
+                    var serverVersion = ServerVersion.AutoDetect(connectionString);
+                    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+                        mySqlOptions.MigrationsAssembly("SportsData.Modules.Competitions"));
+                }
+                else
+                {
+                    options.UseSqlServer(connectionString, sqlOptions =>
+                        sqlOptions.MigrationsAssembly("SportsData.Modules.Competitions"));
+                }
                  
-                 // Suppress pending model changes warning
-                 options.ConfigureWarnings(warnings => 
-                     warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+                // Suppress pending model changes warning
+                options.ConfigureWarnings(warnings => 
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
              });
 
             services.AddMemoryCache();
