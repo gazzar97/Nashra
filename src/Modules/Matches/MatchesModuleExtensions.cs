@@ -10,7 +10,24 @@ namespace SportsData.Modules.Matches
     {
         public static IServiceCollection AddMatchesModule(this IServiceCollection services, IConfiguration configuration)
         {
+            // Build connection string from Railway environment variables
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            
+            // If connection string is empty, build it from environment variables (Railway deployment)
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+                var port = Environment.GetEnvironmentVariable("MYSQLPORT");
+                var database = Environment.GetEnvironmentVariable("MYSQLDATABASE");
+                var user = Environment.GetEnvironmentVariable("MYSQLUSER");
+                var password = Environment.GetEnvironmentVariable("MYSQL_ROOT_PASSWORD") ?? Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+                
+                if (!string.IsNullOrWhiteSpace(host) && !string.IsNullOrWhiteSpace(database))
+                {
+                    connectionString = $"Server={host};Port={port ?? "3306"};Database={database};User={user ?? "root"};Password={password};";
+                }
+            }
+            
             var databaseProvider = configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
 
             services.AddDbContext<MatchesDbContext>(options =>
