@@ -9,6 +9,7 @@ using SportsData.Shared.Middleware;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using SportsData.Modules.ApiKeys.Middleware;
 
 // Configure Serilog BEFORE building the host
 Log.Logger = new LoggerConfiguration()
@@ -21,10 +22,6 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithThreadId()
     .WriteTo.Console()
     .CreateBootstrapLogger();
-
-try
-{
-    Log.Information("Starting SportsData API");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -128,22 +125,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Enable Request Logging Middleware (before API Key validation)
-app.UseMiddleware<RequestLoggingMiddleware>();
-
+app.UseRequestLogging();
 // Enable API Key Validation Middleware
-app.UseMiddleware<SportsData.Modules.ApiKeys.Middleware.ApiKeyValidationMiddleware>();
+app.UseApiKeyValidation();
 
 app.MapCarter();
 
-    Log.Information("SportsData API started successfully");
-    app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-    throw;
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+app.Run();
+
