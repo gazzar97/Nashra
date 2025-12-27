@@ -11,6 +11,7 @@ using Serilog;
 using Serilog.Events;
 using SportsData.Modules.ApiKeys.Middleware;
 using SportsData.Bootstrapper.Extensions;
+using System.Text.RegularExpressions;
 
 // Configure Serilog BEFORE building the host
 Log.Logger = new LoggerConfiguration()
@@ -25,6 +26,15 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Parse Railway's DATABASE_URL if present
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    var connectionString = ParseDatabaseUrl(databaseUrl);
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+    builder.Configuration["DatabaseProvider"] = "PostgreSQL";
+}
 
 // Replace default logging with Serilog
 builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -137,3 +147,23 @@ app.MapCarter();
 
 app.Run();
 
+// Helper method to parse Railway's DATABASE_URL format
+static string ParseDatabaseUrl(string databaseUrl)
+{
+    // Railway format: postgresql://user:password@host:port/database
+    var regex = new Regex(@"postgres(?:ql)?://(?<user>[^:]+):(?<password>[^@]+)@(?<host>[^:]+):(?<port>\d+)/(?<database>.+)");
+    var match = regex.Match(databaseUrl);
+    
+    if (!match.Success)
+    {
+        throw new InvalidOperationException($"Invalid DATABASE_URL format: {databaseUrl}");
+    }
+    
+    var user = match.Groups["user"].Value;
+    var password = match.Groups["password"].Value;
+    var host = match.Groups["host"].Value;
+    var port = match.Groups["port"].Value;
+    var database = match.Groups["database"].Value;
+    
+    return $"Host={host};Port={port};Database={database};Username={user};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+}

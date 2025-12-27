@@ -11,10 +11,20 @@ namespace SportsData.Modules.Matches
         public static IServiceCollection AddMatchesModule(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var databaseProvider = configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
 
             services.AddDbContext<MatchesDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+                {
+                    options.UseNpgsql(connectionString, npgsqlOptions =>
+                        npgsqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
+                }
+                else
+                {
+                    options.UseSqlServer(connectionString, sqlOptions =>
+                        sqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
+                }
             });
             // Register MediatR Handlers from this assembly
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MatchesModuleExtensions).Assembly));

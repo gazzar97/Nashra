@@ -16,10 +16,20 @@ namespace SportsData.Modules.ApiKeys
         public static IServiceCollection AddApiKeysModule(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var databaseProvider = configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
 
             services.AddDbContext<ApiKeysDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                if (databaseProvider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+                {
+                    options.UseNpgsql(connectionString, npgsqlOptions =>
+                        npgsqlOptions.MigrationsAssembly("SportsData.Modules.ApiKeys"));
+                }
+                else
+                {
+                    options.UseSqlServer(connectionString, sqlOptions =>
+                        sqlOptions.MigrationsAssembly("SportsData.Modules.ApiKeys"));
+                }
             });
 
             services.AddMemoryCache();
