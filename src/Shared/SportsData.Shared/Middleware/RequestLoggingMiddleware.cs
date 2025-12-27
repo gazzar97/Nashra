@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using SportsData.Shared.Logging;
 using System.Diagnostics;
@@ -61,5 +62,15 @@ public class RequestLoggingMiddleware
 
             throw;
         }
+    }
+}
+public static class RequestLoggingMiddlewareExtensions
+{
+    /// <summary>
+    /// Extension method to add the RequestLoggingMiddleware to the ASP.NET Core pipeline.
+    /// </summary>
+    public static IApplicationBuilder UseRequestLogging(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<RequestLoggingMiddleware>();
     }
 }

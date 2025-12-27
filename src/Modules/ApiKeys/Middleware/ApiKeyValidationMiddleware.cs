@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using SportsData.Modules.ApiKeys.Application.ApiKeys.Services;
 using SportsData.Modules.ApiKeys.Application.RateLimiting;
@@ -146,6 +147,14 @@ namespace SportsData.Modules.ApiKeys.Middleware
                     // Swallow exceptions to prevent breaking the request
                 }
             });
+        }
+    }
+
+    public static class ApiKeyValidationMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseApiKeyValidation(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ApiKeyValidationMiddleware>();
         }
     }
 }
