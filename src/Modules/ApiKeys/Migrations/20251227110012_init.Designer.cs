@@ -12,50 +12,49 @@ using SportsData.Modules.ApiKeys.Infrastructure;
 namespace SportsData.Modules.ApiKeys.Migrations
 {
     [DbContext(typeof(ApiKeysDbContext))]
-    [Migration("20251225194003_INIT")]
-    partial class INIT
+    [Migration("20251227110012_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("apikeys")
                 .HasAnnotation("ProductVersion", "9.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("SportsData.Modules.ApiKeys.Domain.ApiKey", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("KeyHash")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<DateTime?>("LastUsedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<int>("Plan")
                         .HasColumnType("int");
@@ -67,7 +66,7 @@ namespace SportsData.Modules.ApiKeys.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -81,27 +80,27 @@ namespace SportsData.Modules.ApiKeys.Migrations
                     b.HasIndex("OwnerId")
                         .HasDatabaseName("IX_ApiKeys_OwnerId");
 
-                    b.ToTable("ApiKeys", "apikeys");
+                    b.ToTable("apikeys_apikeys", (string)null);
                 });
 
             modelBuilder.Entity("SportsData.Modules.ApiKeys.Domain.ApiUsageLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("ApiKeyId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Endpoint")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Method")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int>("ResponseTimeMs")
                         .HasColumnType("int");
@@ -110,7 +109,7 @@ namespace SportsData.Modules.ApiKeys.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -120,7 +119,7 @@ namespace SportsData.Modules.ApiKeys.Migrations
                     b.HasIndex("Timestamp")
                         .HasDatabaseName("IX_ApiUsageLogs_Timestamp");
 
-                    b.ToTable("ApiUsageLogs", "apikeys");
+                    b.ToTable("apikeys_apiUsageLog", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -1,10 +1,11 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SportsData.Modules.ApiKeys.Domain;
 
 namespace SportsData.Modules.ApiKeys.Infrastructure
 {
     public class ApiKeysDbContext : DbContext
     {
+        public const string DEFAULT_SCHEMA = "apikeys_";
         public ApiKeysDbContext(DbContextOptions<ApiKeysDbContext> options) : base(options)
         {
         }
@@ -14,7 +15,8 @@ namespace SportsData.Modules.ApiKeys.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("apikeys");
+            modelBuilder.Entity<ApiKey>().ToTable($"{DEFAULT_SCHEMA}apikeys");
+            modelBuilder.Entity<ApiUsageLog>().ToTable($"{DEFAULT_SCHEMA}apiUsageLog");
 
             // ApiKey configuration
             modelBuilder.Entity<ApiKey>(entity =>
