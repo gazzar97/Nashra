@@ -27,14 +27,6 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Parse Railway's DATABASE_URL if present
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-if (!string.IsNullOrEmpty(databaseUrl))
-{
-    var connectionString = ParseDatabaseUrl(databaseUrl);
-    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
-    builder.Configuration["DatabaseProvider"] = "MySQL";
-}
 
 // Replace default logging with Serilog
 builder.Host.UseSerilog((context, services, configuration) => configuration
