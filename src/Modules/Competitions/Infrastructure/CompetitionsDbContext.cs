@@ -5,6 +5,8 @@ namespace SportsData.Modules.Competitions.Infrastructure
 {
     public class CompetitionsDbContext : DbContext
     {
+        public const string Competitions = "competitions_";
+
         public CompetitionsDbContext(DbContextOptions<CompetitionsDbContext> options) : base(options)
         {
         }
@@ -18,14 +20,13 @@ namespace SportsData.Modules.Competitions.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("competitions");
             
-            modelBuilder.Entity<League>().HasKey(x => x.Id);
-            modelBuilder.Entity<Team>().HasKey(x => x.Id);
-            modelBuilder.Entity<Season>().HasKey(x => x.Id);
-            modelBuilder.Entity<Player>().HasKey(x => x.Id);
-            modelBuilder.Entity<LeagueTeamSeason>().HasKey(x => x.Id);
-            modelBuilder.Entity<TeamPlayerSeason>().HasKey(x => x.Id);
+            modelBuilder.Entity<League>().ToTable($"{Competitions}leagues").HasKey(x => x.Id);
+            modelBuilder.Entity<Team>().ToTable($"{Competitions}team").HasKey(x => x.Id);
+            modelBuilder.Entity<Season>().ToTable($"{Competitions}season").HasKey(x => x.Id);
+            modelBuilder.Entity<Player>().ToTable($"{Competitions}player").HasKey(x => x.Id);
+            modelBuilder.Entity<LeagueTeamSeason>().ToTable($"{Competitions}leagueTeamSeason").HasKey(x => x.Id);
+            modelBuilder.Entity<TeamPlayerSeason>().ToTable($"{Competitions}teamPlayerSeason").HasKey(x => x.Id);
         }
     }
 }
