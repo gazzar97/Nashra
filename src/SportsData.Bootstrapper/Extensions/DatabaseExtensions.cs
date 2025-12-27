@@ -44,20 +44,35 @@ public static class DatabaseExtensions
         try
         {
             var context = scope.ServiceProvider.GetRequiredService<TContext>();
-            var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
             
-            if (pendingMigrations.Any())
+            // Check if any migrations exist
+            var allMigrations = context.Database.GetMigrations();
+            
+            if (!allMigrations.Any())
             {
-                logger.LogInformation("Applying {Count} pending migrations for {Module} module", 
-                    pendingMigrations.Count(), moduleName);
-                
-                await context.Database.MigrateAsync();
-                
-                logger.LogInformation("Successfully migrated {Module} module", moduleName);
+                // No migrations exist, use EnsureCreated to create the database schema
+                logger.LogInformation("No migrations found for {Module} module. Creating database schema...", moduleName);
+                await context.Database.EnsureCreatedAsync();
+                logger.LogInformation("Successfully created database schema for {Module} module", moduleName);
             }
             else
             {
-                logger.LogInformation("No pending migrations for {Module} module", moduleName);
+                // Migrations exist, apply them
+                var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+                
+                if (pendingMigrations.Any())
+                {
+                    logger.LogInformation("Applying {Count} pending migrations for {Module} module", 
+                        pendingMigrations.Count(), moduleName);
+                    
+                    await context.Database.MigrateAsync();
+                    
+                    logger.LogInformation("Successfully migrated {Module} module", moduleName);
+                }
+                else
+                {
+                    logger.LogInformation("No pending migrations for {Module} module", moduleName);
+                }
             }
         }
         catch (Exception ex)
