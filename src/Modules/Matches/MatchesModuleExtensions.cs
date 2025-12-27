@@ -25,6 +25,10 @@ namespace SportsData.Modules.Matches
                     options.UseSqlServer(connectionString, sqlOptions =>
                         sqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
                 }
+                
+                // Suppress pending model changes warning
+                options.ConfigureWarnings(warnings => 
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
             });
             // Register MediatR Handlers from this assembly
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MatchesModuleExtensions).Assembly));

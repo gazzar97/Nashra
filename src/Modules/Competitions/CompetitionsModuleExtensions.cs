@@ -30,6 +30,10 @@ namespace SportsData.Modules.Competitions
                      options.UseSqlServer(connectionString, sqlOptions =>
                          sqlOptions.MigrationsAssembly("SportsData.Modules.Competitions"));
                  }
+                 
+                 // Suppress pending model changes warning
+                 options.ConfigureWarnings(warnings => 
+                     warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
              });
 
             services.AddMemoryCache();

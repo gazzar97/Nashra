@@ -30,6 +30,10 @@ namespace SportsData.Modules.ApiKeys
                     options.UseSqlServer(connectionString, sqlOptions =>
                         sqlOptions.MigrationsAssembly("SportsData.Modules.ApiKeys"));
                 }
+                
+                // Suppress pending model changes warning
+                options.ConfigureWarnings(warnings => 
+                    warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
             });
 
             services.AddMemoryCache();
