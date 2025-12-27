@@ -17,7 +17,7 @@ namespace SportsData.Modules.Matches
             {
                 if (databaseProvider.Equals("MySQL", StringComparison.OrdinalIgnoreCase))
                 {
-                    var serverVersion = ServerVersion.AutoDetect(connectionString);
+                    var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
                     options.UseMySql(connectionString, serverVersion, mySqlOptions =>
                         mySqlOptions.MigrationsAssembly("SportsData.Modules.Matches"));
                 }
