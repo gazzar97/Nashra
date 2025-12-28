@@ -8,28 +8,36 @@ namespace SportsData.Shared
         {
             if (result.IsSuccess)
             {
-                return Results.Ok(
-                    Envelope<T>.Success(result.Value!));
+                return result.StatusCode switch
+                {
+                    201 => Results.Created(string.Empty, Envelope<T>.Success(result.Value!)),
+                    204 => Results.NoContent(),
+                    _ => Results.Ok(Envelope<T>.Success(result.Value!))
+                };
             }
 
-            return MapFailure<T>(result.Errors);
+            return MapFailure<T>(result.Errors, result.StatusCode);
         }
+
         public static IResult ToHttpResult(this Result result)
         {
             if (result.IsSuccess)
             {
-                return Results.NoContent();
+                return result.StatusCode == 204 ? Results.NoContent() : Results.Ok();
             }
 
-            return MapFailure<object>(result.Errors);
+            return MapFailure<object>(result.Errors, result.StatusCode);
         }
        
-        private static IResult MapFailure<T>(string[] errors)
+        private static IResult MapFailure<T>(string[] errors, int statusCode)
         {
-            // 🔹 You can improve this logic later without touching endpoints
-            return Results.BadRequest(
-                Envelope<T>.Failure(errors));
+            return statusCode switch
+            {
+                404 => Results.NotFound(Envelope<T>.Failure(errors)),
+                409 => Results.Conflict(Envelope<T>.Failure(errors)),
+                400 => Results.BadRequest(Envelope<T>.Failure(errors)),
+                _ => Results.BadRequest(Envelope<T>.Failure(errors))
+            };
         }
-
     }
 }
